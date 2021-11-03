@@ -1,4 +1,4 @@
-// Contacts is a basic CRUD (create, read, update, delete) route
+// Contacts is a basic CRUD (create, read, update, delete) route to the backend of the project application (express server)
 
 // Contacts Route: add express server to file contacts.js (to obtain the router object)
 const express = require('express');

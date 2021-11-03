@@ -1,11 +1,21 @@
-// Server is the basic express server for the project application
+// server is the main express server file for the project application
 
 // Express Server: initialize object express
 // Note: method require() loads and caches JS modules into a Node.JS application
 const express = require('express');
 
+// Connect Database: add the database file to the main server
+const connectDB = require('./config/db');
+
 // Express Server: initialize object express as variable 'app'
 const app = express();
+
+// Connect Database: connect the database file
+connectDB();
+
+// Users Route: initialize middleware 'express.json()' 
+// Note: express.json is a built-in middleware function inside Express that parses incoming requests with JSON payloads | enables requets of 'request.body,' or body data, to be submitted to a route
+app.use(express.json({extended: false}));
 
 // Express Server: create a GET request into Postman
 app.get('/', (request, response) => {

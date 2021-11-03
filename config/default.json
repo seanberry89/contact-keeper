@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://sean123:sean123@clustersandbox.wzigd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+  "jwtSecret": "secret"
+}
