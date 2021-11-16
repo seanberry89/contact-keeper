@@ -84,6 +84,9 @@ router.post('/', [
     // Users Route: hash the new user password via method hash()
     user.password = await bcrypt.hash(password, salt);
 
+    // Users Route: save the new user to the database via method save()
+    await user.save();
+
     // Users Route: create object 'payload' with the new user data
     // Note: payload is a parameter when creating the user token
     const payload = {
@@ -125,4 +128,5 @@ module.exports = router;
 // * include configuration files: const config = require('config')
 
 // JSOB Web Token Notes:
-// * Definition: JWT is a proposed "internet standard" for creating data with optional signature and/or optional encryption whose payload holds JSON that asserts some number of claims. The tokens are signed either using a private secret or a public/private key.
+// * Definition: JWT is a proposed "internet standard" for creating data with optional signature and/or optional encryption whose payload holds JSON that asserts some number of claims. The tokens are signed either using a private secret or a public/private key
+// * At the most basic level, a JSON Web Token (JWT) is just a small piece of data that contains information about a user. It contains three parts: header, payload, and signature

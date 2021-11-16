@@ -26,14 +26,29 @@ const { check, validationResult } = require('express-validator');
 // Note: method require() is used to include modules that exist in separate files
 const User = require('../models/User');
 
+// Auth Route: include middleware file auth.js to retrieve the verified token
+const auth = require('../middleware/auth');
+
 // Route Notes: 
 // @route -- GET -- api/auth
-// @description -- retrieve a logged user
+// @description -- retrieving a saved user from the database after token verification
 // @access -- private
 
 // Auth Route: create a GET request for route 'auth'
-router.get('/', (request, response) => {
-  response.send('retrieve a logged user');
+router.get('/', auth, async (request, response) => {
+  // Auth Route: check for user token inside the database via method findById()
+  // Note: method findById() returns a promise so insert 'await' beforehand
+  try {
+    // Auth Route: retrieve the user data from the database via method findById()
+    // Note: after user login, request object will have a user object w/ property 'id' as an identifier: so, 'request.user.id' equals the logged user
+    const user = await User.findById(request.user.id).select('-password');
+
+    // Auth Route: retrieve the user data from the response object via json format
+    response.json(user);
+  } catch(error) {
+    console.error(error.message);
+    response.status(500).send('server error');
+  }
 });
 
 // Route Notes: 
@@ -77,7 +92,7 @@ router.post('/', [
     // Auth Route: check if there is NOT a previous user
     if(!user){
       // Auth Route: return error status and error message if there is NOT a previous user
-      return response.status(400).json({ msg: 'invalid login credentials'});
+      return response.status(400).json({ msg: 'no user registered'});
     }
 
     // Auth Route: confirm password by checking if there is a previous user in User model
