@@ -5,31 +5,57 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Home from './components/pages/Home';
 import About from './components/pages/About'
+import Register from './components/auth/Register';
+import Login from './components/auth/Login';
+import Alerts from './components/layout/Alerts';
 
 import ContactState from './context/contact/ContactState';
+import AuthState from './context/auth/AuthState';
+import AlertState from './context/alert/AlertState';
 import './App.css';
+
+// App Component: import route file to secure/redirect to the homepage
+import PrivateRoute from './components/routing/PrivateRoute';
+
+// App Component: import utility file setAuthToken to access the set token into the default header
+import setAuthToken from './utils/setAuthToken';
+
+// App Component: check if there is a token in local storage via if statement
+if(localStorage.token) {
+  // App Component: if so, call method setAuthToken to set the token into the default header
+  // Note: method setAuthToken() takes in the parameter 'localStorage.token,' which is the token in LS
+  setAuthToken(localStorage.token);
+}
 
 const App = () => {
   return (
-    // App Component: insert <ContactState> component to the first-level of the UI as the component inherits the value from the context provider in file ContactState.js
-    <ContactState>
-      {/* // App Component: return <Router> as the first level of the App UI hierarchy */}
-      {/* Notes: <Router> enables access to <Routes> and <Route> */}
-      <Router>
-        <Fragment>
-          <Navbar/>
-          <div className="container">
-            {/* App Component: insert <Routes> and <Route> elements for the home / about pages */}
-            {/* Note: React Router v6 upgrade replaces <Switch> with <Routes> */}
-            {/* Notes: React Router v6 upgrade replaces component={Home} with element={<Home/>} */}
-            <Routes>
-              <Route exact path="/" element={<Home/>} />
-              <Route exact path="/about" element={<About/>} />
-            </Routes>
-          </div>
-        </Fragment>
-      </Router>
-    </ContactState>
+    // App Component: insert <AuthState> component as the first-level of the UI instead of <ContactState>
+    <AuthState>
+      {/* // App Component: insert <ContactState> component to the first-level of the UI as the component inherits the value from the context provider in file ContactState.js */}
+      <ContactState>
+        <AlertState>
+          {/* // App Component: return <Router> as the first level of the App UI hierarchy */}
+          {/* Notes: <Router> enables access to <Routes> and <Route> */}
+          <Router>
+            <Fragment>
+              <Navbar/>
+              <div className="container">
+                <Alerts />
+                {/* App Component: insert <Routes> and <Route> elements for the home / about pages */}
+                {/* Note: React Router v6 upgrade replaces <Switch> with <Routes> */}
+                {/* Notes: React Router v6 upgrade replaces component={Home} with element={<Home/>} */}
+                <Routes>
+                  <Route exact path="/" element={<PrivateRoute><Home/></PrivateRoute>} />
+                  <Route exact path="/about" element={<About/>} />
+                  <Route exact path="/register" element={<Register/>} />
+                  <Route exact path="/login" element={<Login/>} />
+                </Routes>
+              </div>
+            </Fragment>
+          </Router>
+        </AlertState>
+      </ContactState>
+    </AuthState>
   );
 }
 
